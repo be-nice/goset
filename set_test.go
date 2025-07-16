@@ -190,6 +190,16 @@ func generateSet(size int) *Set[int] {
 	return s
 }
 
+func BenchmarkClone(b *testing.B) {
+	a := generateSet(10000)
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = a.Clone()
+	}
+}
+
 func BenchmarkUnion(b *testing.B) {
 	a := generateSet(10000)
 	bSet := generateSet(10000)
@@ -202,7 +212,7 @@ func BenchmarkUnion(b *testing.B) {
 
 func BenchmarkInter(b *testing.B) {
 	a := generateSet(10000)
-	bSet := generateSet(5000) // Partial overlap
+	bSet := generateSet(5000)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

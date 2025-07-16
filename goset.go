@@ -19,7 +19,7 @@ func FromSlice[T comparable](vals []T) *Set[T] {
 }
 
 func (s *Set[T]) Clone() *Set[T] {
-	clone := New[T]()
+	clone := &Set[T]{data: make(map[T]struct{}, s.Len())}
 
 	for k := range s.data {
 		clone.Add(k)
@@ -90,7 +90,7 @@ func (s *Set[T]) Diff(other *Set[T]) *Set[T] {
 }
 
 func (s *Set[T]) Union(other *Set[T]) *Set[T] {
-	union := New[T]()
+	union := &Set[T]{data: make(map[T]struct{}, s.Len()+other.Len())}
 
 	for k := range s.data {
 		union.Add(k)
@@ -104,7 +104,11 @@ func (s *Set[T]) Union(other *Set[T]) *Set[T] {
 }
 
 func (s *Set[T]) Inter(other *Set[T]) *Set[T] {
-	inter := New[T]()
+	if s.Len() > other.Len() {
+		return other.Inter(s)
+	}
+
+	inter := &Set[T]{data: make(map[T]struct{}, s.Len())}
 
 	for k := range s.data {
 		if other.Contains(k) {
